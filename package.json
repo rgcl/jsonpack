@@ -1,0 +1,17 @@
+{
+	"name": "jsonpack",
+	"author": "Rodrigo González | sapienlab",
+	"description": "A JSON compression algorithm.",
+	"licenses": [
+		{
+			"type": "MIT",
+			"url": "http://opensource.org/licenses/MIT"
+		}
+	],
+	"repository": {
+		"type": "git",
+		"url": "http://github.com/sapienlab/jsonpack"
+	},
+	"main": "./main",
+	"dojoBuild": "package.js"
+}
