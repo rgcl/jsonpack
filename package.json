@@ -8,6 +8,10 @@
 			"url": "http://opensource.org/licenses/MIT"
 		}
 	],
+	"maintainers":[{
+   		"name": "Rodrigo González",
+   		"email": "rodrigo@sapienlab.com"  		
+	}],
 	"repository": {
 		"type": "git",
 		"url": "http://github.com/sapienlab/jsonpack"
