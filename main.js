@@ -5,6 +5,7 @@
 		var TOKEN_TRUE = -1;
 		var TOKEN_FALSE = -2;
 		var TOKEN_NULL = -3;
+		var TOKEN_EMPTY_STRING = -4;
 
 		var pack = function(json, options) {
 
@@ -37,6 +38,14 @@
 
 				// The type of the item
 				var type = typeof item;
+
+				// Case 7: The item is null
+				if (item === null) {
+					return {
+						type : 'null',
+						index : TOKEN_NULL
+					};
+				}
 
 				// Case 1: The item is Array Object
 				if ( item instanceof Array) {
@@ -73,7 +82,15 @@
 
 				}
 
-				// Case 3: The item is String
+				// Case 3: The item empty string
+				if (item === '') {
+					return {
+						type : 'empty',
+						index : TOKEN_EMPTY_STRING
+					};
+				}
+
+				// Case 4: The item is String
 				if (type === 'string') {
 
 					// The index of that word in the dictionary
@@ -92,7 +109,7 @@
 					};
 				}
 
-				// Case 4: The item is integer
+				// Case 5: The item is integer
 				if (type === 'number' && item % 1 === 0) {
 
 					// The index of that number in the dictionary
@@ -111,7 +128,7 @@
 					};
 				}
 
-				// Case 5: The item is float
+				// Case 6: The item is float
 				if (type === 'number') {
 					// The index of that number in the dictionary
 					var index = _indexOf.call(dictionary.floats, item);
@@ -120,7 +137,7 @@
 					if (index == -1) {
 						// Float not use base 36
 						dictionary.floats.push(item);
-						index = dictionary.integers.length - 1;
+						index = dictionary.floats.length - 1;
 					}
 
 					// Return the token
@@ -130,19 +147,11 @@
 					};
 				}
 
-				// Case 6: The item is boolean
+				// Case 7: The item is boolean
 				if (type === 'boolean') {
 					return {
 						type : 'boolean',
 						index : item ? TOKEN_TRUE : TOKEN_FALSE
-					};
-				}
-
-				// Case 7: The item is null
-				if (item === null) {
-					return {
-						type : 'null',
-						index : TOKEN_NULL
 					};
 				}
 
@@ -199,16 +208,20 @@
 				}
 
 				if (type === 'floats') {
-					// Return a base 36 of index plus stringLength and floatLength offset
-					return _base10To36(stringLength + floatLength + index);
+					// Return a base 36 of index plus stringLength and integerLength offset
+					return _base10To36(stringLength + integerLength + index);
 				}
 
 				if (type === 'boolean') {
-					return item ? TOKEN_TRUE : TOKEN_FALSE;
+					return item.index;
 				}
 
 				if (type === 'null') {
 					return TOKEN_NULL;
+				}
+
+				if (type === 'empty') {
+					return TOKEN_EMPTY_STRING;
 				}
 
 				throw new TypeError('The item is alien!');
@@ -229,47 +242,57 @@
 
 		};
 
-		var unpack = function(packed) {
+		var unpack = function(packed, options) {
+
+			// Canonizes the options
+			options = options || {};
 
 			// A raw buffer
 			var rawBuffers = packed.split('^');
 
-			var bufferDictionaryStrings = rawBuffers[0].split('|');
-			var bufferDictionaryIntegers = rawBuffers[1].split('|');
-			var bufferDictionaryFloats = rawBuffers[2].split('|');
-			var rawStructure = rawBuffers[3];
-			var bufferAst = rawBuffers[3];
-			// Free memory
-			delete rawBuffers;
-
+			// Create a dictionary
+			options.verbose && console.log('Building dictionary');
 			var dictionary = [];
 
-			// Parse the strings dictionary
-			for (var i in bufferDictionaryStrings) {
-				dictionary.push(_decode(bufferDictionaryStrings[i]));
+			// Add the strings values
+			var buffer = rawBuffers[0];
+			if (buffer !== '') {
+				buffer = buffer.split('|');
+				options.verbose && console.log('Parse the strings dictionary');
+				for (var i in buffer) {
+					dictionary.push(_decode(buffer[i]));
+				}
 			}
-			// Free memory
-			delete bufferDictionaryStrings;
 
-			// Parse the integets dictionary
-			for (var i in bufferDictionaryIntegers) {
-				dictionary.push(_base36To10(bufferDictionaryIntegers[i]));
+			// Add the integers values
+			buffer = rawBuffers[1];
+			if (buffer !== '') {
+				buffer = buffer.split('|');
+				options.verbose && console.log('Parse the integers dictionary');
+				for (var i in buffer) {
+					dictionary.push(_base36To10(buffer[i]));
+				}
 			}
-			// Free memory
-			delete bufferDictionaryIntegers;
 
-			// Parse the Floats dictionary
-			for (var i in bufferDictionaryFloats) {
-				dictionary.push(parseFloat(bufferDictionaryFloats[i]));
+			// Add the floats values
+			buffer = rawBuffers[2];
+			if (buffer !== '') {
+				buffer = buffer.split('|')
+				options.verbose && console.log('Parse the floats dictionary');
+				for (var i in buffer) {
+					dictionary.push(parseFloat(buffer[i]));
+				}
 			}
 			// Free memory
-			delete bufferDictionaryFloats;
+			delete buffer;
+
+			options.verbose && console.log('Tokenizing the structure');
 
 			// Tokenizer the structure
 			var number36 = '';
 			var tokens = [];
-			for (var i in rawStructure) {
-				var symbol = rawStructure[i];
+			for (var i in rawBuffers[3]) {
+				var symbol = rawBuffers[3][i];
 				if (symbol === '|' || symbol === '$' || symbol === '@' || symbol === ']') {
 					if (number36) {
 						tokens.push(_base36To10(number36));
@@ -287,10 +310,14 @@
 			// The index of the next token to read
 			var tokensIndex = 0;
 
+			options.verbose && console.log('Starting recursive parser');
+
 			return (function recursiveUnpackerParser() {
 
 				// Maybe '$' (object) or '@' (array)
 				var type = tokens[tokensIndex++];
+
+				options.verbose && console.log('Reading collection type ' + (type === '$' ? 'object' : 'Array'));
 
 				// Parse an array
 				if (type === '@') {
@@ -299,14 +326,33 @@
 
 					for (; tokensIndex < tokensLength; tokensIndex++) {
 						var value = tokens[tokensIndex];
+						options.verbose && console.log('Read ' + value + ' symbol');
 						if (value === ']')
 							return node;
-						if (type === '@' || type === '$') {
+						if (value === '@' || value === '$') {
 							node.push(recursiveUnpackerParser());
 						} else {
-							node.push(dictionary[tokensIndex]);
+							switch(value) {
+								case TOKEN_TRUE:
+									node.push(true);
+									break;
+								case TOKEN_FALSE:
+									node.push(false);
+									break;
+								case TOKEN_NULL:
+									node.push(null);
+									break;
+								case TOKEN_EMPTY_STRING:
+									node.push('');
+									break;
+								default:
+									node.push(dictionary[value]);
+							}
+
 						}
 					}
+
+					options.verbose && console.log('Parsed ' + this.JSON.stringify(node));
 
 					return node;
 
@@ -323,24 +369,44 @@
 						if (key === ']')
 							return node;
 
-						key = dictionary[key];
+						if (key === TOKEN_EMPTY_STRING)
+							key = '';
+						else
+							key = dictionary[key];
 
 						var value = tokens[++tokensIndex];
 
 						if (value === '@' || value === '$') {
 							node[key] = recursiveUnpackerParser();
 						} else {
-							node[key] = dictionary[value];
-						}
+							switch(value) {
+								case TOKEN_TRUE:
+									node[key] = true;
+									break;
+								case TOKEN_FALSE:
+									node[key] = false;
+									break;
+								case TOKEN_NULL:
+									node[key] = null;
+									break;
+								case TOKEN_EMPTY_STRING:
+									node[key] = '';
+									break;
+								default:
+									node[key] = dictionary[value];
+							}
 
+						}
 					}
+
+					options.verbose && console.log('Parsed ' + this.JSON.stringify(node));
 
 					return node;
 				}
 
 				throw new TypeError('Bad token ' + type + ' isn\'t a type');
 
-			})(0);
+			})();
 
 		}
 		/**
@@ -360,6 +426,10 @@
 			// If is null, return a... yes! the null token
 			if (value === null)
 				return TOKEN_NULL;
+
+			if (value === '') {
+				return TOKEN_EMPTY_STRING;
+			}
 
 			if (type === 'string') {
 				value = _encode(value);
