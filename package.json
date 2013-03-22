@@ -1,7 +1,7 @@
 {
 	"name": "jsonpack",
 	"author": "Rodrigo González | sapienlab",
-	"description": "A JSON compression algorithm",
+	"description": "A compression algorithm for JSON",
 	"version" : "1.0.0",
 	"licenses": [
 		{
