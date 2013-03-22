@@ -7,11 +7,12 @@ A JSON compression algorithm
 jsonpack is an algorithm for pack and unpack JSON data.
 
 It can compress to 55% of original size if the data has a recursive structure, example 
-(http://earthquake.usgs.gov/earthquakes/feed/geojson/2.5/month)[Earthquake GeoJSON] or 
-(http://search.twitter.com/search.json?q=Twitter%20API&result_type=mixed)[Twitter Query API]. 
+[Earthquake GeoJSON](http://earthquake.usgs.gov/earthquakes/feed/geojson/2.5/month) or 
+[Twitter API](http://search.twitter.com/search.json?q=Twitter%20API&result_type=mixed). 
 
 This lib works in Node.js and in the browsers
 
+**Quick example**
 ```
 // big JSON
 var json = {...}
@@ -32,7 +33,7 @@ var json = jsonpack.unpack(packed);
 Via cpm:
 
 ```bash
-$ cpm install jsonapack
+$ cpm install jsonpack
 ```
 
 Via volo:
@@ -218,3 +219,8 @@ Permission is hereby granted, free of charge, to any person obtaining a copy of 
 The above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.
 
 THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
+
+[cpm]: https://github.org/kriszyp/cpm
+[volo]: http://volojs.org/
+[npm]: http://npmjs.org/
+[download]: /sapienlab/jsonpack/archive/master.zip
