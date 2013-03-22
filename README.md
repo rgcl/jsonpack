@@ -217,6 +217,9 @@ Yes, was tested in Node.js, Chrome and Firefox.
 I is not a native English speaker, so create a issue or better a pull request for all of my grammatical errors :)
 As well, if you have a code issue or suggestion, create a issue, Thanks!
 
+### Wath about the icon?
+The icon is a generic (LGPL) icon by David Vignoni - http://www.icon-king.com/
+
 ## LICENCE
 
 The MIT License (MIT)
