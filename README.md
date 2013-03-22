@@ -63,6 +63,7 @@ Retrieve a packed representation of the json
 
 ** Example **
 * Example 1: Node.js
+
 ```javascript
 /**
  * Example in node.js, read a file with JSON content and save another file
@@ -85,6 +86,7 @@ fs.readFile('../data/bigData.json', 'utf8', function(error, jsonContent) {
 ```
 
 * Example 2: Browser/Node.js with AMD
+
 ```javasctipt
 require(['jsonpack', 'text!../data/bigData.json'], function(jsonpack, jsonContent) {
 
@@ -96,6 +98,7 @@ require(['jsonpack', 'text!../data/bigData.json'], function(jsonpack, jsonConten
 });
 ```
 * Example 3: Browser
+
 ```html
 <script src="path/to/jsonpack/main.js" />
 <script>
@@ -146,6 +149,7 @@ Unpack the data in the *packed* parameter
 ** Examples: **
 
 Example 1: Node.js
+
 ```javascript
 /**
  * Example in node.js, read a file with packed content and save another file
@@ -169,6 +173,7 @@ fs.readFile('../data/packedjson', 'utf8', function(error, packed) {
 ```
 
 * Example 2: Browser/Node.js with AMD
+
 ```javasctipt
 require(['jsonpack', 'text!../data/packed'], function(jsonpack, packed) {
 
@@ -179,8 +184,11 @@ require(['jsonpack', 'text!../data/packed'], function(jsonpack, packed) {
 	// Do stuff with the JavaScript object
     console.log(json);
 });
+
 ```
-Example 3: Browser
+
+* Example 3: Browser
+
 ```html
 <script src="path/to/jsonpack/main.js" />
 <script>
@@ -223,4 +231,4 @@ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLI
 [cpm]: https://github.org/kriszyp/cpm
 [volo]: http://volojs.org/
 [npm]: http://npmjs.org/
-[download]: /sapienlab/jsonpack/archive/master.zip
+[download]: https://github.com/sapienlab/jsonpack/archive/master.zip
