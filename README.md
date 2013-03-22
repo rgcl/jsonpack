@@ -1,6 +1,6 @@
 # jsonpack
 
-A JSON compression algorithm
+A compression algorithm for JSON
 
 ## Introduction
 
