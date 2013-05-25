@@ -13,7 +13,7 @@ It can compress to 55% of original size if the data has a recursive structure, e
 This lib works in Node.js and in the browsers
 
 **Quick example**
-```
+```javascript
 // big JSON
 var json = {...}
 
@@ -58,17 +58,26 @@ By default is the native JSON implemented in Ecmascript 5
 
 ### Members
 
-#### jsonpack.pack(/*Object|string*/ json, /*[Object]*/ options)
+#### jsonpack.pack(json, options)
 Retrieve a packed representation of the json
 
 ** Example **
 * Example 1: Node.js
 
+** Parameters **
+* json {Object|string}: A valid JSON Object or their string representation
+* parameters {[Object]}: A optional object
+* parameters.verbose {[boolean=false]}: If is true, print a message step with step to the console when is packing
+* parameters.debug {[boolean=false]}: If is true, return a object with the internal representation of the
+                                      parser dictionary and the AST
+
+** Returns:** 
+* string: the packed string representation of the data
+* object: if parameters.debug is true
+
 ```javascript
-/**
- * Example in node.js, read a file with JSON content and save another file
- * with the packed representation of that JSON
- */
+// Example in node.js, read a file with JSON content and save another file
+// with the packed representation of that JSON
 var jsonpack = require('jsonpack/main'),
     fs       = require('fs');
     
@@ -87,7 +96,7 @@ fs.readFile('../data/bigData.json', 'utf8', function(error, jsonContent) {
 
 * Example 2: Browser/Node.js with AMD
 
-```javasctipt
+```javascript
 require(['jsonpack', 'text!../data/bigData.json'], function(jsonpack, jsonContent) {
 
 	// packed the data
@@ -97,6 +106,7 @@ require(['jsonpack', 'text!../data/bigData.json'], function(jsonpack, jsonConten
     console.log(packed);
 });
 ```
+
 * Example 3: Browser
 
 ```html
@@ -131,20 +141,16 @@ require(['jsonpack', 'text!../data/bigData.json'], function(jsonpack, jsonConten
 </script>
 ```
 
-** Parameters **
-* json {Object|string}: A valid JSON Object or their string representation
-* parameters {[Object]}: A optional object
-* parameters.verbose {[boolean=false]}: If is true, print a message step with step to the console when is packing
-* parameters.debug {[boolean=false]}: If is true, return a object with the internal representation of the
-                                      parser dictionary and the AST
-
-** Returns:** 
-* string: the packed string representation of the data
-* object: if parameters.debug is true
-
-#### jsonpack.unpack(/* string */ packed, /* [Object] */ options)
+#### jsonpack.unpack(packed, options)
 
 Unpack the data in the *packed* parameter
+
+** Parameters **
+* packed {string} : The result of call jsonpack.packed(...)
+* options {[Object]}: Optional object
+* options.verbose {[boolean]}: If is true print step to step message in the console  
+
+** Return: ** Object, the clone of the original JSON
 
 ** Examples: **
 
@@ -174,7 +180,7 @@ fs.readFile('../data/packedjson', 'utf8', function(error, packed) {
 
 * Example 2: Browser/Node.js with AMD
 
-```javasctipt
+```javascript
 require(['jsonpack', 'text!../data/packed'], function(jsonpack, packed) {
 
 	// unpacked the data
@@ -201,13 +207,6 @@ require(['jsonpack', 'text!../data/packed'], function(jsonpack, packed) {
  
 </script>
 ```
-
-** Parameters **
-* packed {string} : The result of call jsonpack.packed(...)
-* options {[Object]}: Optional object
-* options.verbose {[boolean]}: If is true print step to step message in the console  
-
-** Return: ** Object, the clone of the original JSON
 
 ## FAQ
 ### This library is stable?
