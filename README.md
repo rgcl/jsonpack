@@ -52,7 +52,7 @@ $ npm install jsonpack
 
 ### Atributes
 
-#### jsonpack.JSON {Object}
+#### jsonpack.JSON
 A object that implements the JSON.parse() and JSON.stringify() members.
 By default is the native JSON implemented in Ecmascript 5
 
@@ -61,10 +61,8 @@ By default is the native JSON implemented in Ecmascript 5
 #### jsonpack.pack(json, options)
 Retrieve a packed representation of the json
 
-** Example **
-* Example 1: Node.js
-
 ** Parameters **
+
 * json {Object|string}: A valid JSON Object or their string representation
 * parameters {[Object]}: A optional object
 * parameters.verbose {[boolean=false]}: If is true, print a message step with step to the console when is packing
@@ -72,8 +70,13 @@ Retrieve a packed representation of the json
                                       parser dictionary and the AST
 
 ** Returns:** 
+
 * string: the packed string representation of the data
 * object: if parameters.debug is true
+
+** Example **
+
+* Example 1: Node.js
 
 ```javascript
 // Example in node.js, read a file with JSON content and save another file
@@ -146,6 +149,7 @@ require(['jsonpack', 'text!../data/bigData.json'], function(jsonpack, jsonConten
 Unpack the data in the *packed* parameter
 
 ** Parameters **
+
 * packed {string} : The result of call jsonpack.packed(...)
 * options {[Object]}: Optional object
 * options.verbose {[boolean]}: If is true print step to step message in the console  
@@ -157,10 +161,8 @@ Unpack the data in the *packed* parameter
 Example 1: Node.js
 
 ```javascript
-/**
- * Example in node.js, read a file with packed content and save another file
- * with the string representation of the original JSON
- */
+// Example in node.js, read a file with packed content and save another file
+// with the string representation of the original JSON
 var jsonpack = require('jsonpack/main'),
     fs       = require('fs');
     
