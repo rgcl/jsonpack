@@ -1,6 +1,6 @@
 /*
  Copyright (c) 2013, Rodrigo González, Sapienlab All Rights Reserved.
- Available via MIT LICENSE, see LICENSE.
+ Available via MIT LICENSE, see https://github.com/roro89/jsonpack/blob/master/LICENSE.md for details.
  */
 var miniExcludes = {
 		"jsonpack/README.md": 1,
