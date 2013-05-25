@@ -1,3 +1,7 @@
+/*
+ Copyright (c) 2013, Rodrigo González, Sapienlab All Rights Reserved.
+ Available via MIT LICENSE, see LICENSE.
+ */
 var miniExcludes = {
 		"jsonpack/README.md": 1,
 		"jsonpack/package": 1

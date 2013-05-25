@@ -1,3 +1,7 @@
+/*
+ Copyright (c) 2013, Rodrigo González, Sapienlab All Rights Reserved.
+ Available via MIT LICENSE. See https://github.com/sapienlab/jsonpack/LICENSE.md for details.
+ */
 (function(define) {
 
 	define([], function() {
