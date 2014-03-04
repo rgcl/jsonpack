@@ -482,12 +482,13 @@
 			if ( typeof str !== 'string')
 				return str;
 
-			return str.replace(/[\+ \|]/g, function(a) {
+			return str.replace(/[\+ \|\^\%]/g, function(a) {
 				return ({
 				' ' : '+',
 				'+' : '%2B',
 				'|' : '%7C',
-				'~' : '%5E'
+				'^' : '%5E',
+				'%' : '%25'
 				})[a]
 			});
 		};
@@ -496,12 +497,13 @@
 			if ( typeof str !== 'string')
 				return str;
 
-			return str.replace(/\+|%2B|%7C/g, function(a) {
+			return str.replace(/\+|%2B|%7C|%5E|%25/g, function(a) {
 				return ({
 				'+' : ' ',
 				'%2B' : '+',
 				'%7C' : '|',
-				'%5E' : '~'
+				'%5E' : '^',
+				'%25' : '%'
 				})[a]
 			})
 		};
@@ -534,7 +536,7 @@
 
 })( typeof define == 'undefined' || !define.amd ? function(deps, factory) {
 	var jsonpack = factory();
-	if ( typeof window == 'undefined')
+	if ( typeof exports != 'undefined')
 		for (var key in jsonpack)
 		exports[key] = jsonpack[key];
 	else
