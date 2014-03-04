@@ -534,7 +534,7 @@
 
 })( typeof define == 'undefined' || !define.amd ? function(deps, factory) {
 	var jsonpack = factory();
-	if ( typeof window == 'undefined')
+	if ( typeof exports != 'undefined')
 		for (var key in jsonpack)
 		exports[key] = jsonpack[key];
 	else
