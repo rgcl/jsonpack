@@ -482,12 +482,12 @@
 			if ( typeof str !== 'string')
 				return str;
 
-			return str.replace(/[\+ \|]/g, function(a) {
+			return str.replace(/[\+ \|\^]/g, function(a) {
 				return ({
 				' ' : '+',
 				'+' : '%2B',
 				'|' : '%7C',
-				'~' : '%5E'
+				'^' : '%5E'
 				})[a]
 			});
 		};
@@ -496,12 +496,12 @@
 			if ( typeof str !== 'string')
 				return str;
 
-			return str.replace(/\+|%2B|%7C/g, function(a) {
+			return str.replace(/\+|%2B|%7C|%5E/g, function(a) {
 				return ({
 				'+' : ' ',
 				'%2B' : '+',
 				'%7C' : '|',
-				'%5E' : '~'
+				'%5E' : '^'
 				})[a]
 			})
 		};
