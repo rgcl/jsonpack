@@ -1,16 +1,16 @@
-# jsonpack
+# jsonpack <img src=https://raw.githubusercontent.com/sapienlab/jsonpack/master/icon.png alt="icon for jsonpack compressor">
 
 A compression algorithm for JSON
 
 ## Introduction
 
-jsonpack is an algorithm for pack and unpack JSON data.
+jsonpack is a JavaScript program to pack and unpack JSON data.
 
 It can compress to 55% of original size if the data has a recursive structure, example 
 [Earthquake GeoJSON](http://earthquake.usgs.gov/earthquakes/feed/geojson/2.5/month) or 
 [Twitter API](http://search.twitter.com/search.json?q=Twitter%20API&result_type=mixed). 
 
-This lib works in Node.js and in the browsers
+This lib works in both Node.js and browsers (older browsers missing [ES5's JSON.stringify](http://caniuse.com/json) support will need a [shim](http://bestiejs.github.io/json3/)).
 
 **Quick example**
 ```javascript
@@ -54,7 +54,7 @@ $ npm install jsonpack
 
 #### jsonpack.JSON
 A object that implements the JSON.parse() and JSON.stringify() members.
-By default is the native JSON implemented in Ecmascript 5
+By default is the native JSON implemented in ECMAscript 5.
 
 ### Members
 
@@ -65,7 +65,7 @@ Retrieve a packed representation of the json
 
 * json {Object|string}: A valid JSON Object or their string representation
 * parameters {[Object]}: A optional object
-* parameters.verbose {[boolean=false]}: If is true, print a message step with step to the console when is packing
+* parameters.verbose {[boolean=false]}: If is true, print a log message to the console at each step of packing
 * parameters.debug {[boolean=false]}: If is true, return a object with the internal representation of the
                                       parser dictionary and the AST
 
@@ -74,7 +74,7 @@ Retrieve a packed representation of the json
 * string: the packed string representation of the data
 * object: if parameters.debug is true
 
-** Example **
+##### Examples
 
 * Example 1: Node.js
 
@@ -137,9 +137,10 @@ require(['jsonpack', 'text!../data/bigData.json'], function(jsonpack, jsonConten
  	
  var packed = jsonpack.pack(json);
  
+ console.log(packed);
  // print:
  // "type|world|name|earth|children|continent|America|country|Chile|commune|Antofagasta|Europe^^^$0|1|2|3|4|@$0|5|2|6|4|@$0|7|2|8|4|@$0|9|2|A]]]]]|$0|5|2|B]]]"
- console.log(packed);
+
  
 </script>
 ```
@@ -156,9 +157,9 @@ Unpack the data in the *packed* parameter
 
 ** Return: ** Object, the clone of the original JSON
 
-** Examples: **
+##### Examples
 
-Example 1: Node.js
+* Example 1: Node.js
 
 ```javascript
 // Example in node.js, read a file with packed content and save another file
