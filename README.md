@@ -65,9 +65,11 @@ Retrieve a packed representation of the json
 
 * json {Object|string}: A valid JSON Object or their string representation
 * parameters {[Object]}: A optional object
-* parameters.verbose {[boolean=false]}: If is true, print a log message to the console at each step of packing
-* parameters.debug {[boolean=false]}: If is true, return a object with the internal representation of the
-                                      parser dictionary and the AST
+	* verbose (devault is false): If is true, print a log message to the console at each step of packing
+		* example: `jsonpack.pack(json, { verbose: true });` packs with verbose only
+	* debug {[boolean=false]}: If is true, return a object with the internal representation of the
+                             parser dictionary and the AST
+		* example: `jsonpack.pack(json, { debug: true });` packs with debug only
 
 ** Returns:** 
 
@@ -153,7 +155,7 @@ Unpack the data in the *packed* parameter
 
 * packed {string} : The result of call jsonpack.packed(...)
 * options {[Object]}: Optional object
-* options.verbose {[boolean]}: If is true print step to step message in the console  
+	* verbose (default: false) print a log message to the console at each step of packing  
 
 ** Return: ** Object, the clone of the original JSON
 
