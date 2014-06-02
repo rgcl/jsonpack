@@ -10,6 +10,7 @@
 		var TOKEN_FALSE = -2;
 		var TOKEN_NULL = -3;
 		var TOKEN_EMPTY_STRING = -4;
+		var TOKEN_UNDEFINED = -5;
 
 		var pack = function(json, options) {
 
@@ -48,6 +49,14 @@
 					return {
 						type : 'null',
 						index : TOKEN_NULL
+					};
+				}
+				
+				//add undefined 
+				if (typeof item === 'undefined') {
+					return {
+						type : 'undefined',
+						index : TOKEN_UNDEFINED
 					};
 				}
 
@@ -224,6 +233,10 @@
 					return TOKEN_NULL;
 				}
 
+				if (type === 'undefined') {
+					return TOKEN_UNDEFINED;
+				}
+
 				if (type === 'empty') {
 					return TOKEN_EMPTY_STRING;
 				}
@@ -346,6 +359,9 @@
 								case TOKEN_NULL:
 									node.push(null);
 									break;
+								case TOKEN_UNDEFINED:
+									node.push(undefined);
+									break;
 								case TOKEN_EMPTY_STRING:
 									node.push('');
 									break;
@@ -393,6 +409,9 @@
 								case TOKEN_NULL:
 									node[key] = null;
 									break;
+								case TOKEN_UNDEFINED:
+									node[key] = undefined;
+									break;
 								case TOKEN_EMPTY_STRING:
 									node[key] = '';
 									break;
@@ -430,6 +449,11 @@
 			// If is null, return a... yes! the null token
 			if (value === null)
 				return TOKEN_NULL;
+
+			//add undefined
+			if (typeof value === 'undefined')
+				return TOKEN_UNDEFINED;
+
 
 			if (value === '') {
 				return TOKEN_EMPTY_STRING;
