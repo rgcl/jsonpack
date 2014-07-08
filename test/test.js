@@ -48,7 +48,7 @@ describe('jsonpack', function() {
         });
 
         it('has unpack method', function() {
-            expect(typeof jsonpack.unpack).to.be.a("function");
+            expect(jsonpack.unpack).to.be.a("function");
         });
 
     });
