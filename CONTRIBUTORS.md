@@ -1,3 +1,5 @@
-* Rodrigo González <rodrigo@sapienlab.com> (roro89)
-* <webmaster@b123400.net> (b123400)
-* (tomByrer)
+* Rodrigo González <rodrigo@sapienlab.com> ([roro89](https://github.com/roro89))
+* ([b123400](https://github.com/b123400))
+* ([tomByrer](https://github.com/tomByrer))
+* WebGap ([lihe1314](https://github.com/lihe1314))
+* Alex Gorbatchev ([alexgorbatchev](https://github.com/alexgorbatchev))
