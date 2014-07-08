@@ -7,6 +7,7 @@
 describe('jsonpack', function() {
     
     var assert = require('assert'),
+        expect = require('expect.js'),
         jsonpack = require('../main.js');
     
     var plainObject = {
@@ -35,19 +36,19 @@ describe('jsonpack', function() {
     describe('elemental', function() {
 
         it('is object', function() {
-            assert.equal(typeof jsonpack, "object");
+            expect(jsonpack).to.be("object");
         });
 
         it('has JSON property', function() {
-            assert.equal(typeof jsonpack.JSON, "object");
+            expect(jsonpack.JSON).to.be("object");
         });
 
         it('has pack method', function() {
-            assert.equal(typeof jsonpack.pack, "function");
+            expect(jsonpack.pack).to.be("function");
         });
 
         it('has unpack method', function() {
-            assert.equal(typeof jsonpack.unpack, "function");
+            expect(typeof jsonpack.unpack).to.be("function");
         });
 
     });
@@ -55,23 +56,23 @@ describe('jsonpack', function() {
     describe('pack', function() {
 
         it('empty object', function() {
-            assert.equal(jsonpack.pack({}), "^^^$]");
+            expect(jsonpack.pack({})).to.eql("^^^$]");
         });
 
         it('empty array', function() {
-            assert.equal(jsonpack.pack([]), "^^^@]");
+            expect(jsonpack.pack([])).to.eql("^^^@]");
         });
 
         it('plain object', function() {
-            assert.equal(jsonpack.pack(plainObject), plainObjectPacked);
+            expect(jsonpack.pack(plainObject)).to.eql(plainObjectPacked);
         });
 
         it('deep object', function() {
-            assert.equal(jsonpack.pack(deepObject), deepObjectPacked);
+            expect(jsonpack.pack(deepObject)).to.eql(deepObjectPacked);
         });
 
         it('complex array object', function() {
-            assert.equal(jsonpack.pack(arrayObject), arrayObjectPacked);
+            expect(jsonpack.pack(arrayObject)).to.eql(arrayObjectPacked);
         });
 
     });
@@ -79,23 +80,23 @@ describe('jsonpack', function() {
     describe('unpack', function() {
 
         it('empty object', function() {
-            assert.equal(jsonpack.unpack("^^^$]"), {});
+            expect(jsonpack.unpack("^^^$]")).to.eql({});
         });
 
         it('empty array', function() {
-            assert.equal(jsonpack.unpack("^^^@]"), []);
+            expect(jsonpack.unpack("^^^@]")).to.eql([]);
         });
 
         it('plain object', function() {
-            assert.equal(jsonpack.unpack(plainObjectPacked), plainObject);
+            expect(jsonpack.unpack(plainObjectPacked)).to.eql(plainObject);
         });
 
         it('deep object', function() {
-            assert.equal(jsonpack.unpack(deepObjectPacked), deepObject);
+            expect(jsonpack.unpack(deepObjectPacked)).to.eql(deepObject);
         });
 
         it('complex array object', function() {
-            assert.equal(jsonpack.unpack(arrayObjectPacked), arrayObject);
+            expect(jsonpack.unpack(arrayObjectPacked)).to.eql(arrayObject);
         });
 
     });
