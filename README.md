@@ -1,3 +1,4 @@
+[![Build Status](https://secure.travis-ci.org/sapienlab/jsonpack.png)](http://travis-ci.org/sapienlab/jsonpack)
 # jsonpack <img src=https://raw.githubusercontent.com/sapienlab/jsonpack/master/icon.png alt="icon for jsonpack compressor">
 
 A compression algorithm for JSON
