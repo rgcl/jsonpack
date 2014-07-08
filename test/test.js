@@ -36,19 +36,19 @@ describe('jsonpack', function() {
     describe('elemental', function() {
 
         it('is object', function() {
-            expect(jsonpack).to.be("object");
+            expect(jsonpack).to.be.an("object");
         });
 
         it('has JSON property', function() {
-            expect(jsonpack.JSON).to.be("object");
+            expect(jsonpack.JSON).to.be.an("object");
         });
 
         it('has pack method', function() {
-            expect(jsonpack.pack).to.be("function");
+            expect(jsonpack.pack).to.be.a("function");
         });
 
         it('has unpack method', function() {
-            expect(typeof jsonpack.unpack).to.be("function");
+            expect(typeof jsonpack.unpack).to.be.a("function");
         });
 
     });
