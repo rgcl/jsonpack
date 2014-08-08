@@ -171,8 +171,6 @@
 					};
 				}
 
-				// if (type=== "function") console.log(item)
-
 				// Default
 				throw new Error('Unexpected argument of type ' + typeof (item));
 
