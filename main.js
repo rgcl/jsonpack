@@ -1,10 +1,11 @@
 /*
  Copyright (c) 2013, Rodrigo González, Sapienlab All Rights Reserved.
  Available via MIT LICENSE. See https://github.com/roro89/jsonpack/blob/master/LICENSE.md for details.
+	Isobar Modified to include a name 'jsonpack'
  */
 (function(define) {
 
-	define([], function() {
+	define('jsonpack', [], function() {
 
 		var TOKEN_TRUE = -1;
 		var TOKEN_FALSE = -2;
@@ -68,6 +69,9 @@
 
 					// Add each items
 					for (var i in item) {
+						
+						if (!item.hasOwnProperty(i)) continue;
+
 						ast.push(recursiveAstBuilder(item[i]));
 					}
 
@@ -168,6 +172,8 @@
 					};
 				}
 
+				// if (type=== "function") console.log(item)
+
 				// Default
 				throw new Error('Unexpected argument of type ' + typeof (item));
 
@@ -200,6 +206,7 @@
 					var packed = item.shift();
 
 					for (var i in item) {
+						if (!item.hasOwnProperty(i)) continue;
 						packed += recursiveParser(item[i]) + '|';
 					}
 
