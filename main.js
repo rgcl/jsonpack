@@ -1,11 +1,10 @@
 /*
  Copyright (c) 2013, Rodrigo González, Sapienlab All Rights Reserved.
  Available via MIT LICENSE. See https://github.com/roro89/jsonpack/blob/master/LICENSE.md for details.
-	Isobar Modified to include a name 'jsonpack'
  */
 (function(define) {
 
-	define('jsonpack', [], function() {
+	define([], function() {
 
 		var TOKEN_TRUE = -1;
 		var TOKEN_FALSE = -2;
