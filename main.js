@@ -68,6 +68,9 @@
 
 					// Add each items
 					for (var i in item) {
+						
+						if (!item.hasOwnProperty(i)) continue;
+
 						ast.push(recursiveAstBuilder(item[i]));
 					}
 
@@ -200,6 +203,7 @@
 					var packed = item.shift();
 
 					for (var i in item) {
+						if (!item.hasOwnProperty(i)) continue;
 						packed += recursiveParser(item[i]) + '|';
 					}
 
