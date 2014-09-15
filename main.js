@@ -317,7 +317,8 @@
 			// Tokenizer the structure
 			var number36 = '';
 			var tokens = [];
-			for (var i = 0, len = rawBuffers[3].length; i < len; i++) {
+			var len=rawBuffers[3].length;
+			for (var i = 0; i < len; i++) {
 				var symbol = rawBuffers[3].charAt(i);
 				if (symbol === '|' || symbol === '$' || symbol === '@' || symbol === ']') {
 					if (number36) {
