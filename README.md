@@ -95,7 +95,7 @@ fs.readFile('../data/bigData.json', 'utf8', function(error, jsonContent) {
     var packed = jsonpack.pack(jsonContent);
     
     // save the packed in a file
-    fs.writeFile('../data/packedjson', packed);
+    fs.writeFile('../data/packed.txt', packed);
     
 });
 ```
@@ -172,14 +172,14 @@ var jsonpack = require('jsonpack/main'),
     
 // read a file called packedjson and execute with 
 // packed as the content of the file
-fs.readFile('../data/packedjson', 'utf8', function(error, packed) {
+fs.readFile('../data/packed.txt', 'utf8', function(error, packed) {
     
-    // json now is a clone of the original JSON
-    var json = jsonpack.pack(jsonContent);
+    // data now is a JavaScript Object of the original JSON
+    var data = jsonpack.unpack(jsonContent);
     
-    // save the JSON in a file. 
-    // json is a Javascript Object, so must be stringifed
-    fs.writeFile('../data/packedjson', JSON.stringify(json));
+    // save the JSON in a file. data is a Javascript Object, so must be
+    // stringifed (and pretty print the JSON with 2 space indents).
+    fs.writeFile('../data/unpacked.json', JSON.stringify(data, null, 2));
     
 });
 ```
