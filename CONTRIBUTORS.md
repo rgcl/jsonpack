@@ -4,3 +4,5 @@
 * WebGap ([lihe1314](https://github.com/lihe1314))
 * Joseph Jung ([ozymandias547](https://github.com/ozymandias547))
 * ([lskrabonja](https://github.com/lskrabonja))
+* Devin Weaver ([sukima](https://github.com/sukima))
+* Craig Andrews ([candrews](https://github.com/candrews))
