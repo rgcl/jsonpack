@@ -285,7 +285,7 @@
 			if (buffer !== '') {
 				buffer = buffer.split('|');
 				options.verbose && console.log('Parse the strings dictionary');
-				for (var i in buffer) {
+				for (var i=0, n=buffer.length; i<n; i++){
 					dictionary.push(_decode(buffer[i]));
 				}
 			}
@@ -295,7 +295,7 @@
 			if (buffer !== '') {
 				buffer = buffer.split('|');
 				options.verbose && console.log('Parse the integers dictionary');
-				for (var i in buffer) {
+				for (var i=0, n=buffer.length; i<n; i++){
 					dictionary.push(_base36To10(buffer[i]));
 				}
 			}
@@ -305,7 +305,7 @@
 			if (buffer !== '') {
 				buffer = buffer.split('|')
 				options.verbose && console.log('Parse the floats dictionary');
-				for (var i in buffer) {
+				for (var i=0, n=buffer.length; i<n; i++){
 					dictionary.push(parseFloat(buffer[i]));
 				}
 			}
