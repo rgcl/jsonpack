@@ -310,7 +310,7 @@
 				}
 			}
 			// Free memory
-			delete buffer;
+			buffer = null;
 
 			options.verbose && console.log('Tokenizing the structure');
 
