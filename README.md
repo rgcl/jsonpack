@@ -51,7 +51,7 @@ $ npm install jsonpack
 
 ## API
 
-### Atributes
+### Attributes
 
 #### jsonpack.JSON
 A object that implements the JSON.parse() and JSON.stringify() members.
