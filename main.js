@@ -15,7 +15,10 @@
 		var isArray = Array.isArray;
 		if (typeof isArray !== "function") {
 			isArray = function(item) {
-				if (item instanceof Array) {
+				if (!item || typeof item !== "object") {
+					return false;
+				}
+				else if (item instanceof Array) {
 					return true;
 				}
 				return Object.prototype.toString.call(item) === '[object Array]';
