@@ -11,6 +11,13 @@
 		var TOKEN_NULL = -3;
 		var TOKEN_EMPTY_STRING = -4;
 		var TOKEN_UNDEFINED = -5;
+		
+		var isArray = Array.isArray;
+		if (typeof isArray !== "function") {
+			isArray = function(item) {
+				return Object.prototype.toString.call(item) === '[object Array]';
+			}
+		}
 
 		var pack = function(json, options) {
 
@@ -61,7 +68,7 @@
 				}
 
 				// Case 1: The item is Array Object
-				if ( item instanceof Array) {
+				if (isArray(item)) {
 
 					// Create a new sub-AST of type Array (@)
 					var ast = ['@'];
