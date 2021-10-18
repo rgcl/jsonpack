@@ -82,22 +82,28 @@
 				// Case 2: The item is Object
 				if (type === 'object') {
 
-					// Create a new sub-AST of type Object ($)
-					var ast = ['$'];
+					// If the item is instance of date object, convert it into timestamp and pass to case 5 for processing
+					if (item instanceof Date && item.getTime) {
+						item = item.getTime();
+						type = 'number';
+					} else {
+						// Create a new sub-AST of type Object ($)
+						var ast = ['$'];
 
-					// Add each items
-					for (var key in item) {
+						// Add each items
+						for (var key in item) {
 
-						if (!item.hasOwnProperty(key))
-							continue;
+							if (!item.hasOwnProperty(key))
+								continue;
 
-						ast.push(recursiveAstBuilder(key));
-						ast.push(recursiveAstBuilder(item[key]));
+							ast.push(recursiveAstBuilder(key));
+							ast.push(recursiveAstBuilder(item[key]));
+						}
+
+						// And return
+						return ast;
 					}
-
-					// And return
-					return ast;
-
+				
 				}
 
 				// Case 3: The item empty string
