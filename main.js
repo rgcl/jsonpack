@@ -29,9 +29,12 @@
 
 			// The dictionary
 			var dictionary = {
-				strings : [],
-				integers : [],
-				floats : []
+				strings : {},
+				integers : {},
+				floats : {},
+				stringsLen: 0,
+				integersLen: 0,
+				floatsLen: 0
 			};
 
 			verbose && console.log('Creating the AST');
@@ -110,59 +113,70 @@
 
 				// Case 4: The item is String
 				if (type === 'string') {
-
+					item = _encode(item);
 					// The index of that word in the dictionary
-					var index = _indexOf.call(dictionary.strings, item);
-
-					// If not, add to the dictionary and actualize the index
-					if (index == -1) {
-						dictionary.strings.push(_encode(item));
-						index = dictionary.strings.length - 1;
+					if (item in dictionary.strings) {
+						// Return the token
+						return {
+							type : 'strings',
+							index : dictionary.strings[item]
+						}
+					} else {
+						// If not, add to the dictionary and actualize the index
+						var index = dictionary.stringsLen;
+						dictionary.strings[item] = index;
+						dictionary.stringsLen += 1;
+						// Return the token
+						return {
+							type : 'strings',
+							index : index
+						}
 					}
-
-					// Return the token
-					return {
-						type : 'strings',
-						index : index
-					};
 				}
 
 				// Case 5: The item is integer
 				if (type === 'number' && item % 1 === 0) {
-
+					item = _base10To36(item);
 					// The index of that number in the dictionary
-					var index = _indexOf.call(dictionary.integers, item);
-
-					// If not, add to the dictionary and actualize the index
-					if (index == -1) {
-						dictionary.integers.push(_base10To36(item));
-						index = dictionary.integers.length - 1;
+					if(item in dictionary.integers) {
+						// Return the token
+						return {
+							type : 'integers',
+							index : dictionary.integers[item]
+						};
+					} else {
+						// If not, add to the dictionary and actualize the index
+						var index = dictionary.integersLen;
+						dictionary.integers[item] = index;
+						dictionary.integersLen += 1;
+						// Return the token
+						return {
+							type : 'integers',
+							index : index
+						};
 					}
-
-					// Return the token
-					return {
-						type : 'integers',
-						index : index
-					};
 				}
 
 				// Case 6: The item is float
 				if (type === 'number') {
 					// The index of that number in the dictionary
-					var index = _indexOf.call(dictionary.floats, item);
-
-					// If not, add to the dictionary and actualize the index
-					if (index == -1) {
-						// Float not use base 36
-						dictionary.floats.push(item);
-						index = dictionary.floats.length - 1;
+					if(item in dictionary.floats) {
+						// Return the token
+						return {
+							type : 'floats',
+							index : dictionary.floats[item]
+						};
+					} else {
+						// If not, add to the dictionary and actualize the index
+						var index = dictionary.floatsLen;
+						dictionary.floats[item] = index;
+						dictionary.floatsLen += 1;
+						// Return the token
+						return {
+							type : 'floats',
+							index : index
+						};
 					}
-
-					// Return the token
-					return {
-						type : 'floats',
-						index : index
-					};
 				}
 
 				// Case 7: The item is boolean
@@ -179,16 +193,16 @@
 			})(json);
 
 			// A set of shorthands proxies for the length of the dictionaries
-			var stringLength = dictionary.strings.length;
-			var integerLength = dictionary.integers.length;
-			var floatLength = dictionary.floats.length;
+			var stringLength = dictionary.stringsLen;
+			var integerLength = dictionary.integersLen;
+			var floatLength = dictionary.floatsLen;
 
 			verbose && console.log('Parsing the dictionary');
 
 			// Create a raw dictionary
-			var packed = dictionary.strings.join('|');
-			packed += '^' + dictionary.integers.join('|');
-			packed += '^' + dictionary.floats.join('|');
+			var packed = _getSortedKeys(dictionary.strings, dictionary.stringsLen).join('|');
+			packed += '^' + _getSortedKeys(dictionary.integers, dictionary.integersLen).join('|');
+			packed += '^' + _getSortedKeys(dictionary.floats, dictionary.floatsLen).join('|');
 
 			verbose && console.log('Parsing the structure');
 
@@ -442,75 +456,14 @@
 			})();
 
 		}
-		/**
-		 * Get the index value of the dictionary
-		 * @param {Object} dictionary a object that have two array attributes: 'string' and 'number'
-		 * @param {Object} data
-		 */
-		var _indexOfDictionary = function(dictionary, value) {
 
-			// The type of the value
-			var type = typeof value;
-
-			// If is boolean, return a boolean token
-			if (type === 'boolean')
-				return value ? TOKEN_TRUE : TOKEN_FALSE;
-
-			// If is null, return a... yes! the null token
-			if (value === null)
-				return TOKEN_NULL;
-
-			//add undefined
-			if (typeof value === 'undefined')
-				return TOKEN_UNDEFINED;
-
-
-			if (value === '') {
-				return TOKEN_EMPTY_STRING;
+		var _getSortedKeys = function(dict, len) {
+			var arr = new Array(len);
+			for (var key in dict) {
+				arr[dict[key]] = key;
 			}
-
-			if (type === 'string') {
-				value = _encode(value);
-				var index = _indexOf.call(dictionary.strings, value);
-				if (index === -1) {
-					dictionary.strings.push(value);
-					index = dictionary.strings.length - 1;
-				}
-			}
-
-			// If has an invalid JSON type (example a function)
-			if (type !== 'string' && type !== 'number') {
-				throw new Error('The type is not a JSON type');
-			};
-
-			if (type === 'string') {// string
-				value = _encode(value);
-			} else if (value % 1 === 0) {// integer
-				value = _base10To36(value);
-			} else {// float
-
-			}
-
-			// If is number, "serialize" the value
-			value = type === 'number' ? _base10To36(value) : _encode(value);
-
-			// Retrieve the index of that value in the dictionary
-			var index = _indexOf.call(dictionary[type], value);
-
-			// If that value is not in the dictionary
-			if (index === -1) {
-				// Push the value
-				dictionary[type].push(value);
-				// And return their index
-				index = dictionary[type].length - 1;
-			}
-
-			// If the type is a number, then add the '+'  prefix character
-			// to differentiate that they is a number index. If not, then
-			// just return a 36-based representation of the index
-			return type === 'number' ? '+' + index : index;
-
-		};
+			return arr;
+		}
 
 		var _encode = function(str) {
 			if ( typeof str !== 'string')
@@ -548,16 +501,6 @@
 
 		var _base36To10 = function(number) {
 			return parseInt(number, 36);
-		};
-
-		var _indexOf = Array.prototype.indexOf ||
-		function(obj, start) {
-			for (var i = (start || 0), j = this.length; i < j; i++) {
-				if (this[i] === obj) {
-					return i;
-				}
-			}
-			return -1;
 		};
 
 		return {
