@@ -1,6 +1,6 @@
 /*
  Copyright (c) 2013, Rodrigo González, Sapienlab All Rights Reserved.
- Available via MIT LICENSE. See https://github.com/roro89/jsonpack/blob/master/LICENSE.md for details.
+ Available via MIT LICENSE. See https://github.com/rgcl/jsonpack/blob/master/LICENSE.md for details.
  */
 (function(define) {
 
