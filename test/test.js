@@ -25,13 +25,13 @@ describe('jsonpack', function() {
             attr2 : plainObject,
             attr3 : [plainObject, plainObject]
         },
-        deepObjectPacked = "attr1|string|hello|integer|float|true|false|null|attr2|attr3^1J9|1J9|1J9|1J9^1.2^$0|$1|2|3|A|4|E|5|-1|6|-2|7|-3]|8|$1|2|3|B|4|E|5|-1|6|-2|7|-3]|9|@$1|2|3|C|4|E|5|-1|6|-2|7|-3]|$1|2|3|D|4|E|5|-1|6|-2|7|-3]]]";
+        deepObjectPacked = "attr1|string|hello|integer|float|true|false|null|attr2|attr3^1J9^1.2^$0|$1|2|3|A|4|B|5|-1|6|-2|7|-3]|8|$1|2|3|A|4|B|5|-1|6|-2|7|-3]|9|@$1|2|3|A|4|B|5|-1|6|-2|7|-3]|$1|2|3|A|4|B|5|-1|6|-2|7|-3]]]";
 
     var arrayObject = [
             plainObject,
             deepObject
         ],
-        arrayObjectPacked = "string|hello|integer|float|true|false|null|attr1|attr2|attr3^1J9|1J9|1J9|1J9|1J9^1.2^@$0|1|2|A|3|F|4|-1|5|-2|6|-3]|$7|$0|1|2|B|3|F|4|-1|5|-2|6|-3]|8|$0|1|2|C|3|F|4|-1|5|-2|6|-3]|9|@$0|1|2|D|3|F|4|-1|5|-2|6|-3]|$0|1|2|E|3|F|4|-1|5|-2|6|-3]]]]";
+        arrayObjectPacked = "string|hello|integer|float|true|false|null|attr1|attr2|attr3^1J9^1.2^@$0|1|2|A|3|B|4|-1|5|-2|6|-3]|$7|$0|1|2|A|3|B|4|-1|5|-2|6|-3]|8|$0|1|2|A|3|B|4|-1|5|-2|6|-3]|9|@$0|1|2|A|3|B|4|-1|5|-2|6|-3]|$0|1|2|A|3|B|4|-1|5|-2|6|-3]]]]";
 
     describe('elemental', function() {
 
