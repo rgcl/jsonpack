@@ -1,10 +1,66 @@
 # jsonpack
 
 [![Test](https://github.com/rgcl/jsonpack/actions/workflows/test.yml/badge.svg)](https://github.com/rgcl/jsonpack/actions/workflows/test.yml)
+[![npm](https://img.shields.io/npm/v/jsonpack)](https://www.npmjs.com/package/jsonpack)
 
-A compression algorithm for JSON.
+A URL-safe JSON serializer that sits between the naive approach and maximum compression.
 
-jsonpack packs and unpacks JSON data using a dictionary-based encoding scheme. It can compress structured JSON to ~55% of its original size, especially effective with recursive or repetitive data (e.g. API responses, GeoJSON feeds).
+## The problem with JSON in URLs
+
+The standard way to embed JSON in a URL or `localStorage` is:
+
+```js
+encodeURIComponent(JSON.stringify(data))
+```
+
+It works, but it *expands* your data — `{`, `"`, `:` become `%7B`, `%22`, `%3A`. A typical API response grows to **140–170% of its original size**.
+
+The alternative with the best compression, [lz-string](https://github.com/pieroxy/lz-string), shrinks data dramatically but decodes **4–6× slower**.
+
+jsonpack sits in between.
+
+## Positioning
+
+Benchmarked against 8 real-world datasets (GeoJSON, e-commerce products, API responses, deeply nested structures):
+
+![URL-safe JSON serializers: compression vs speed](charts/01-scatter-compression-vs-speed.png)
+
+| | encodeURI(JSON) | **jsonpack** | lz-string (URI) |
+|---|:---:|:---:|:---:|
+| Avg output size | 152% of original | **68% of original** | 39% of original |
+| Avg unpack speed | 262 MB/s | **171 MB/s** | 41 MB/s |
+| Zero dependencies | ✓ | ✓ | ✓ |
+| URL-safe output | ✓ | ✓ | ✓ |
+
+### Compression by dataset
+
+![Compression ratio by dataset](charts/02-ratio-per-dataset.png)
+
+### Unpack speed by dataset
+
+![Unpack speed by dataset](charts/03-unpack-speed-per-dataset.png)
+
+jsonpack weighs **< 7 KB minified** with zero dependencies — no transitive dependencies either.
+
+Full benchmark methodology and raw results: [rgcl/jsonpack-benchmark](https://github.com/rgcl/jsonpack-benchmark)
+
+## When to use jsonpack
+
+**Use jsonpack when:**
+- You need to store JSON in a URL query string or `localStorage`
+- Output size matters (jsonpack produces ~55% less data than `encodeURIComponent`)
+- Fast decoding matters (jsonpack decodes 4× faster than lz-string)
+- You can't afford to grow your bundle (zero dependencies)
+
+**Use lz-string instead when** output size is the only constraint and decoding speed doesn't matter.
+
+**Use `encodeURIComponent` when** the data is small, changes rarely, or you want zero abstraction.
+
+## How it works
+
+jsonpack builds a dictionary of all unique values (strings, integers, floats) in the JSON and replaces them with base-36 indices. The result is a flat, ASCII-only string. Repeated keys and values — common in structured data like API responses and GeoJSON — are stored once and referenced everywhere.
+
+`Date` objects are serialized as ISO 8601 strings.
 
 ## Installation
 
@@ -24,30 +80,37 @@ const { pack, unpack } = require('jsonpack');
 import { pack, unpack } from 'jsonpack';
 ```
 
-**Quick example**
+**Example**
 ```js
 const { pack, unpack } = require('jsonpack');
 
-const json = { type: 'world', name: 'earth', children: [{ type: 'continent', name: 'America' }] };
+const data = {
+    type: 'FeatureCollection',
+    features: [
+        { type: 'Feature', geometry: { type: 'Point', coordinates: [-73.98, 40.74] }, properties: { name: 'A' } },
+        { type: 'Feature', geometry: { type: 'Point', coordinates: [-73.99, 40.75] }, properties: { name: 'B' } },
+        // ... hundreds more
+    ]
+};
 
-const packed = pack(json);
-// "type|world|name|earth|children|continent|America^^^$0|1|2|3|4|@$0|5|2|6]]"
+const packed = pack(data);
+// repeated keys like "type", "Feature", "geometry", "Point", "coordinates"
+// are stored once in a dictionary and referenced by index
 
 const restored = unpack(packed);
-// { type: 'world', name: 'earth', children: [{ type: 'continent', name: 'America' }] }
 ```
 
 ## API
 
 ### `pack(json, options?)`
 
-Packs a JSON value into a compact string.
+Serializes a JSON value into a compact URL-safe string.
 
-- `json` — a JavaScript value (object, array, string, number, boolean, null) or a JSON string
-- `options.verbose` — print log messages at each step (default: `false`)
+- `json` — any JSON-serializable value, or a JSON string
+- `options.verbose` — log each step to console (default: `false`)
 - `options.debug` — return internal representation instead of string (default: `false`)
 
-`Date` objects are serialized as ISO 8601 strings.
+`Date` objects are automatically converted to ISO 8601 strings.
 
 Returns a `string`.
 
@@ -55,24 +118,17 @@ Returns a `string`.
 
 Restores the original value from a packed string.
 
-- `packed` — the string produced by `pack()`
-- `options.verbose` — print log messages at each step (default: `false`)
+- `packed` — string produced by `pack()`
+- `options.verbose` — log each step to console (default: `false`)
 
-Returns the original JavaScript value.
+Returns the original value.
 
 ## Notes
 
-- Pack/unpack are synchronous. For large payloads in a browser, run them in a [Web Worker](https://developer.mozilla.org/en-US/docs/Web/API/Web_Workers_API).
-- The packed format is not designed for streaming or incremental decoding.
-- Requires Node.js >= 14.
+- Pack and unpack are synchronous. For large payloads in a browser, run them in a [Web Worker](https://developer.mozilla.org/en-US/docs/Web/API/Web_Workers_API).
+- Requires Node.js ≥ 14.
+- The packed format is not binary-compatible with other JSON compression libraries.
 
-## LICENCE
+## Licence
 
-The MIT License (MIT)
-Copyright (c) 2013 Rodrigo González, SASUD
-
-Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated documentation files (the "Software"), to deal in the Software without restriction, including without limitation the rights to use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of the Software, and to permit persons to whom the Software is furnished to do so, subject to the following conditions:
-
-The above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.
-
-THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
+MIT © 2013 Rodrigo González, SASUD
