@@ -53,7 +53,7 @@ Serializes a JSON value into a compact URL-safe string.
 - `options.verbose` — log each step to console (default: `false`)
 - `options.debug` — return internal representation instead of string (default: `false`)
 
-`Date` objects are automatically converted to ISO 8601 strings.
+`Date` objects are preserved: `unpack(pack(date))` returns a `Date` instance, not a string.
 
 Returns a `string`.
 
@@ -119,7 +119,9 @@ Full benchmark methodology and raw results: [rgcl/jsonpack-benchmark](https://gi
 
 ### How it works
 
-jsonpack builds a dictionary of all unique values (strings, integers, floats) in the JSON and replaces them with base-36 indices. The result is a flat, ASCII-only string. Repeated keys and values — common in structured data like API responses and GeoJSON — are stored once and referenced everywhere.
+jsonpack builds a dictionary of all unique values (strings, integers, floats, dates) in the JSON and replaces them with base-36 indices. The result is a flat, ASCII-only string. Repeated keys and values — common in structured data like API responses and GeoJSON — are stored once and referenced everywhere.
+
+`Date` objects are stored as ISO 8601 strings in the dictionary and marked with a special token in the structure, so `unpack` can restore them as `Date` instances. This is one area where jsonpack goes beyond what `JSON.parse(JSON.stringify())` offers natively.
 
 ---
 
