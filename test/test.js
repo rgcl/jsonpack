@@ -1,104 +1,74 @@
-/*
- Copyright (c) 2013, Rodrigo González, Sapienlab All Rights Reserved.
- Available via MIT LICENSE. See https://github.com/roro89/jsonpack/blob/master/LICENSE.md for details.
- */
 'use strict';
 
-describe('jsonpack', function() {
-    
-    var assert = require('assert'),
-        expect = require('expect.js'),
-        jsonpack = require('../main.js');
-    
-    var plainObject = {
-            "string" : "hello",
-            "integer" : 1989,
-            "float" : 1.2,
-            "true" : true,
-            "false" : false,
-            "null" : null
-        },
-        plainObjectPacked = "string|hello|integer|float|true|false|null^1J9^1.2^$0|1|2|7|3|8|4|-1|5|-2|6|-3]";
+const assert = require('assert').strict;
+const jsonpack = require('../index.js');
 
-    var deepObject = {
-            attr1 : plainObject,
-            attr2 : plainObject,
-            attr3 : [plainObject, plainObject]
-        },
-        deepObjectPacked = "attr1|string|hello|integer|float|true|false|null|attr2|attr3^1J9^1.2^$0|$1|2|3|A|4|B|5|-1|6|-2|7|-3]|8|$1|2|3|A|4|B|5|-1|6|-2|7|-3]|9|@$1|2|3|A|4|B|5|-1|6|-2|7|-3]|$1|2|3|A|4|B|5|-1|6|-2|7|-3]]]";
+describe('jsonpack', () => {
 
-    var arrayObject = [
-            plainObject,
-            deepObject
-        ],
-        arrayObjectPacked = "string|hello|integer|float|true|false|null|attr1|attr2|attr3^1J9^1.2^@$0|1|2|A|3|B|4|-1|5|-2|6|-3]|$7|$0|1|2|A|3|B|4|-1|5|-2|6|-3]|8|$0|1|2|A|3|B|4|-1|5|-2|6|-3]|9|@$0|1|2|A|3|B|4|-1|5|-2|6|-3]|$0|1|2|A|3|B|4|-1|5|-2|6|-3]]]]";
+    const plainObject = {
+        string  : 'hello',
+        integer : 1989,
+        float   : 1.2,
+        true    : true,
+        false   : false,
+        null    : null
+    };
+    const plainObjectPacked = 'string|hello|integer|float|true|false|null^1J9^1.2^$0|1|2|7|3|8|4|-1|5|-2|6|-3]';
 
-    describe('elemental', function() {
+    const deepObject = {
+        attr1 : plainObject,
+        attr2 : plainObject,
+        attr3 : [plainObject, plainObject]
+    };
+    const deepObjectPacked = 'attr1|string|hello|integer|float|true|false|null|attr2|attr3^1J9^1.2^$0|$1|2|3|A|4|B|5|-1|6|-2|7|-3]|8|$1|2|3|A|4|B|5|-1|6|-2|7|-3]|9|@$1|2|3|A|4|B|5|-1|6|-2|7|-3]|$1|2|3|A|4|B|5|-1|6|-2|7|-3]]]';
 
-        it('is object', function() {
-            expect(jsonpack).to.be.an("object");
-        });
+    const arrayObject = [plainObject, deepObject];
+    const arrayObjectPacked = 'string|hello|integer|float|true|false|null|attr1|attr2|attr3^1J9^1.2^@$0|1|2|A|3|B|4|-1|5|-2|6|-3]|$7|$0|1|2|A|3|B|4|-1|5|-2|6|-3]|8|$0|1|2|A|3|B|4|-1|5|-2|6|-3]|9|@$0|1|2|A|3|B|4|-1|5|-2|6|-3]|$0|1|2|A|3|B|4|-1|5|-2|6|-3]]]]';
 
-        it('has JSON property', function() {
-            expect(jsonpack.JSON).to.be.an("object");
-        });
-
-        it('has pack method', function() {
-            expect(jsonpack.pack).to.be.a("function");
-        });
-
-        it('has unpack method', function() {
-            expect(jsonpack.unpack).to.be.a("function");
-        });
-
+    describe('module shape', () => {
+        it('exports pack function',   () => assert.equal(typeof jsonpack.pack,   'function'));
+        it('exports unpack function', () => assert.equal(typeof jsonpack.unpack, 'function'));
     });
 
-    describe('pack', function() {
+    describe('pack', () => {
+        it('empty object',       () => assert.equal(jsonpack.pack({}),          '^^^$]'));
+        it('empty array',        () => assert.equal(jsonpack.pack([]),           '^^^@]'));
+        it('plain object',       () => assert.equal(jsonpack.pack(plainObject),  plainObjectPacked));
+        it('deep object',        () => assert.equal(jsonpack.pack(deepObject),   deepObjectPacked));
+        it('complex array',      () => assert.equal(jsonpack.pack(arrayObject),  arrayObjectPacked));
 
-        it('empty object', function() {
-            expect(jsonpack.pack({})).to.eql("^^^$]");
+        it('deduplicates strings with escape characters', () => {
+            const packed = jsonpack.pack({ attr1: ' ', attr2: '+' });
+            assert.equal(packed, 'attr1|+|attr2|%2B^^^$0|1|2|3]');
         });
 
-        it('empty array', function() {
-            expect(jsonpack.pack([])).to.eql("^^^@]");
+        it('serializes Date as ISO string', () => {
+            const iso = '2024-01-15T12:00:00.000Z';
+            const packed = jsonpack.pack({ d: new Date(iso) });
+            assert.equal(jsonpack.unpack(packed).d, iso);
         });
-
-        it('plain object', function() {
-            expect(jsonpack.pack(plainObject)).to.eql(plainObjectPacked);
-        });
-
-        it('deep object', function() {
-            expect(jsonpack.pack(deepObject)).to.eql(deepObjectPacked);
-        });
-
-        it('complex array object', function() {
-            expect(jsonpack.pack(arrayObject)).to.eql(arrayObjectPacked);
-        });
-
     });
 
-    describe('unpack', function() {
+    describe('unpack', () => {
+        it('empty object',  () => assert.deepEqual(jsonpack.unpack('^^^$]'),         {}));
+        it('empty array',   () => assert.deepEqual(jsonpack.unpack('^^^@]'),         []));
+        it('plain object',  () => assert.deepEqual(jsonpack.unpack(plainObjectPacked), plainObject));
+        it('deep object',   () => assert.deepEqual(jsonpack.unpack(deepObjectPacked),  deepObject));
+        it('complex array', () => assert.deepEqual(jsonpack.unpack(arrayObjectPacked), arrayObject));
+    });
 
-        it('empty object', function() {
-            expect(jsonpack.unpack("^^^$]")).to.eql({});
+    describe('round-trip', () => {
+        const roundTrip = (obj) => jsonpack.unpack(jsonpack.pack(obj));
+
+        it('null values',       () => assert.deepEqual(roundTrip({ a: null, b: [null] }), { a: null, b: [null] }));
+        it('undefined values',  () => assert.deepEqual(roundTrip({ a: undefined }), { a: undefined }));
+        it('empty strings',     () => assert.deepEqual(roundTrip({ a: '', b: ['', ''] }), { a: '', b: ['', ''] }));
+        it('booleans',          () => assert.deepEqual(roundTrip({ t: true, f: false }), { t: true, f: false }));
+        it('nested arrays',     () => assert.deepEqual(roundTrip([[1, 2], [3, 4]]), [[1, 2], [3, 4]]));
+        it('strings with special characters', () => {
+            const obj = { space: 'hello world', plus: 'a+b', pipe: 'a|b', caret: 'a^b', percent: '50%' };
+            assert.deepEqual(roundTrip(obj), obj);
         });
-
-        it('empty array', function() {
-            expect(jsonpack.unpack("^^^@]")).to.eql([]);
-        });
-
-        it('plain object', function() {
-            expect(jsonpack.unpack(plainObjectPacked)).to.eql(plainObject);
-        });
-
-        it('deep object', function() {
-            expect(jsonpack.unpack(deepObjectPacked)).to.eql(deepObject);
-        });
-
-        it('complex array object', function() {
-            expect(jsonpack.unpack(arrayObjectPacked)).to.eql(arrayObject);
-        });
-
     });
 
 });

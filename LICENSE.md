@@ -1,7 +1,7 @@
 # LICENCE
 
 The MIT License (MIT)
-Copyright (c) 2013 Rodrigo González, Sapienlab
+Copyright (c) 2013 Rodrigo González, SASUD
 
 Permission is hereby granted, free of charge, to any
 person obtaining a copy of this software and associated

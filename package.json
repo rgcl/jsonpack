@@ -1,40 +1,43 @@
 {
-	"name": "jsonpack",
-	"author": "Rodrigo González | sapienlab",
-	"description": "A compression algorithm for JSON",
-	"version" : "1.1.5",
-	"licenses": [
-		{
-			"type": "MIT",
-			"url": "https://github.com/roro89/jsonpack/blob/master/LICENSE.md"
-		}
-	],
-	"maintainers":[{
-   		"name": "Rodrigo González",
-   		"email": "rodrigo@sapienlab.com",
-   		"web" : "http://sapienlab.com"
-	}],
-	"repository": {
-		"type": "git",
-		"url": "https://github.com/sapienlab/jsonpack.git"
-	},
-	"keywords" : [
-		"compress",
-		"json"
-	],
-	"homepage" : "https://github.com/sapienlab/jsonpack",
-	"readmeFilename" : "README.md",
-	"main": "./main",
-	"dojoBuild": "package.js",
-	"icon" : "https://raw.github.com/sapienlab/jsonpack/master/icon.png",
-	"volo" : {
-		"baseDir" : "."		
-	},
-	"devDependencies": {
-		"mocha": "*",
-		"expect.js" : "*"
-	},
-	"scripts": {
-		"test": "make test"
-	}
+  "name": "jsonpack",
+  "version": "2.0.0",
+  "description": "A compression algorithm for JSON",
+  "author": "Rodrigo González <rodrigo@sasud.com>",
+  "license": "MIT",
+  "homepage": "https://github.com/rgcl/jsonpack",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/rgcl/jsonpack.git"
+  },
+  "keywords": [
+    "compress",
+    "json",
+    "pack",
+    "unpack"
+  ],
+  "engines": {
+    "node": ">=14"
+  },
+  "main": "./index.js",
+  "module": "./index.mjs",
+  "types": "./index.d.ts",
+  "exports": {
+    ".": {
+      "import": "./index.mjs",
+      "require": "./index.js",
+      "types": "./index.d.ts"
+    }
+  },
+  "files": [
+    "index.js",
+    "index.mjs",
+    "index.d.ts"
+  ],
+  "scripts": {
+    "test": "mocha test/*.js"
+  },
+  "devDependencies": {
+    "mocha": "^10.4.0",
+    "chai": "^4.4.1"
+  }
 }
