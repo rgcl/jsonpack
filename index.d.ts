@@ -9,7 +9,7 @@ export interface UnpackOptions {
 
 /**
  * Packs a JSON value into a compact string representation.
- * Date objects are serialized as ISO 8601 strings.
+ * Date objects are preserved and restored as Date instances on unpack.
  */
 export function pack(json: unknown, options?: PackOptions): string;
 

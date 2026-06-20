@@ -9,6 +9,7 @@ const TOKEN_FALSE = -2;
 const TOKEN_NULL = -3;
 const TOKEN_EMPTY_STRING = -4;
 const TOKEN_UNDEFINED = -5;
+const TOKEN_DATE = -6;
 
 const _encode = (str) => {
     if (typeof str !== 'string') return str;
@@ -58,8 +59,15 @@ const pack = (json, options = {}) => {
         if (item === null) return { type: 'null', index: TOKEN_NULL };
         if (typeof item === 'undefined') return { type: 'undefined', index: TOKEN_UNDEFINED };
 
-        // Date → ISO string (preserves type on unpack when treated as string)
-        if (item instanceof Date) item = item.toISOString();
+        if (item instanceof Date) {
+            const encoded = _encode(item.toISOString());
+            if (encoded in dictionary.strings) {
+                return { type: 'date', index: dictionary.strings[encoded] };
+            }
+            const index = dictionary.stringsLen++;
+            dictionary.strings[encoded] = index;
+            return { type: 'date', index };
+        }
 
         if (Array.isArray(item)) {
             const ast = ['@'];
@@ -153,6 +161,7 @@ const pack = (json, options = {}) => {
         if (type === 'strings')   return _base10To36(index);
         if (type === 'integers')  return _base10To36(stringLength + index);
         if (type === 'floats')    return _base10To36(stringLength + integerLength + index);
+        if (type === 'date')      return TOKEN_DATE + '|' + _base10To36(index);
         if (type === 'boolean')   return index;
         if (type === 'null')      return TOKEN_NULL;
         if (type === 'undefined') return TOKEN_UNDEFINED;
@@ -221,6 +230,8 @@ const unpack = (packed, options = {}) => {
                 if (value === ']') return node;
                 if (value === '@' || value === '$') {
                     node.push(recursiveUnpackerParser());
+                } else if (value === TOKEN_DATE) {
+                    node.push(new Date(dictionary[tokens[++tokensIndex]]));
                 } else {
                     switch (value) {
                         case TOKEN_TRUE:         node.push(true);      break;
@@ -245,6 +256,8 @@ const unpack = (packed, options = {}) => {
                 const value = tokens[++tokensIndex];
                 if (value === '@' || value === '$') {
                     node[key] = recursiveUnpackerParser();
+                } else if (value === TOKEN_DATE) {
+                    node[key] = new Date(dictionary[tokens[++tokensIndex]]);
                 } else {
                     switch (value) {
                         case TOKEN_TRUE:         node[key] = true;      break;

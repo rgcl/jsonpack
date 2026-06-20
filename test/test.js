@@ -42,10 +42,28 @@ describe('jsonpack', () => {
             assert.equal(packed, 'attr1|+|attr2|%2B^^^$0|1|2|3]');
         });
 
-        it('serializes Date as ISO string', () => {
-            const iso = '2024-01-15T12:00:00.000Z';
-            const packed = jsonpack.pack({ d: new Date(iso) });
-            assert.equal(jsonpack.unpack(packed).d, iso);
+        it('round-trips Date as Date instance', () => {
+            const date = new Date('2024-01-15T12:00:00.000Z');
+            const result = jsonpack.unpack(jsonpack.pack({ d: date }));
+            assert.ok(result.d instanceof Date, 'should be a Date instance');
+            assert.equal(result.d.toISOString(), date.toISOString());
+        });
+
+        it('deduplicates repeated Date values', () => {
+            const date = new Date('2024-01-15T12:00:00.000Z');
+            const result = jsonpack.unpack(jsonpack.pack({ a: date, b: date }));
+            assert.ok(result.a instanceof Date);
+            assert.ok(result.b instanceof Date);
+            assert.equal(result.a.toISOString(), result.b.toISOString());
+        });
+
+        it('round-trips Date in array', () => {
+            const dates = [new Date('2024-01-01T00:00:00.000Z'), new Date('2024-06-15T12:30:00.000Z')];
+            const result = jsonpack.unpack(jsonpack.pack(dates));
+            assert.ok(result[0] instanceof Date);
+            assert.ok(result[1] instanceof Date);
+            assert.equal(result[0].toISOString(), dates[0].toISOString());
+            assert.equal(result[1].toISOString(), dates[1].toISOString());
         });
     });
 
