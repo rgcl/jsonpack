@@ -33,8 +33,21 @@ const _decode = (str) => {
     })[a]);
 };
 
-const _base10To36 = (number) => Number.prototype.toString.call(number, 36).toUpperCase();
-const _base36To10 = (number) => parseInt(number, 36);
+// Encode/decode integers through BigInt so values beyond 2^53 are exact.
+// `Number#toString(36)` and `parseInt(_, 36)` both accumulate in a double and
+// lose precision for large integers, which broke the round-trip contract
+// (e.g. 1e21 came back as 1.0000000000000001e21). Indices stay small, so the
+// BigInt path is equivalent for them.
+const _base10To36 = (number) => BigInt(number).toString(36).toUpperCase();
+const _base36To10 = (str) => {
+    const negative = str.charAt(0) === '-';
+    const digits = negative ? str.slice(1) : str;
+    let acc = 0n;
+    for (const ch of digits) {
+        acc = acc * 36n + BigInt(parseInt(ch, 36));
+    }
+    return Number(negative ? -acc : acc);
+};
 
 const pack = (json, options = {}) => {
     const verbose = options.verbose || false;
