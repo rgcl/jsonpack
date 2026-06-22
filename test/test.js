@@ -87,6 +87,10 @@ describe('jsonpack', () => {
             const obj = { space: 'hello world', plus: 'a+b', pipe: 'a|b', caret: 'a^b', percent: '50%' };
             assert.deepEqual(roundTrip(obj), obj);
         });
+        it('large integers beyond 2^53', () => {
+            const obj = { a: 1e21, b: 1e23, c: 1.5e300, d: -1.5e300, e: Number.MAX_SAFE_INTEGER };
+            assert.deepEqual(roundTrip(obj), obj);
+        });
     });
 
 });
